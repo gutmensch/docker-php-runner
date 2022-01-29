@@ -1,0 +1,27 @@
+server {
+	listen ${NGINX_LISTEN_PORT} default_server;
+	listen [::]:${NGINX_LISTEN_PORT} default_server;
+
+	root ${DOCUMENT_ROOT};
+	index index.php index.html index.htm;
+
+	server_name _;
+
+	location /ping {
+		access_log off;
+		return 200 'pong';
+	}
+
+	location / {
+		try_files $uri $uri/ =404;
+	}
+
+	location ~ [^/]\.php(/|$) {
+		include fastcgi-php.conf;
+		fastcgi_pass unix:/var/run/php-fpm.sock;
+	}
+
+	location ~ /\.ht {
+		deny all;
+	}
+}

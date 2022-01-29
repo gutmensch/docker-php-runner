@@ -1,0 +1,7 @@
+#!/usr/bin/with-contenv bash
+
+variables='${DOCUMENT_ROOT}:${NGINX_LISTEN_PORT}:${UPLOAD_POST_BODY_MAX_MB}'
+envsubst "${variables}" < default.conf.tmpl > /etc/nginx/http.d/default.conf
+envsubst "${variables}" < nginx.conf.tmpl > /etc/nginx/nginx.conf
+
+exec nginx

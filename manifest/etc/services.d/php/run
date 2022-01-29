@@ -1,0 +1,7 @@
+#!/usr/bin/with-contenv bash
+
+variables='${PHP_MEMORY_LIMIT}:${PHP_ERROR_REPORTING}:${UPLOAD_POST_BODY_MAX_MB}:${TZ}'
+envsubst "${variables}" < php-fpm.conf.tmpl > /etc/php7/php-fpm.conf
+envsubst "${variables}" < php.ini.tmpl > /etc/php7/php.ini
+
+exec php-fpm7
