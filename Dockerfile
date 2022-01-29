@@ -20,17 +20,30 @@ RUN apk update \
     php7-curl \
     php7-fpm \
     php7-gd \
+    php7-gmp \
     php7-iconv \
+    php7-imap \
     php7-intl \
     php7-json \
+    php7-ldap \
     php7-mbstring \
     php7-mcrypt \
     php7-mysqli \
     php7-mysqlnd \
     php7-openssl \
+    php7-pcntl \
+    php7-pgsql \
+    php7-pdo \
+    php7-pdo_mysql \
+    php7-pdo_pgsql \
+    php7-pdo_sqlite \
     php7-pear \
     php7-pecl-memcached \
+    php7-pecl-redis \
     php7-phar \
+    php7-posix \
+    php7-session \
+    php7-shmop \
     php7-sqlite3 \
     php7-xml \
     php7-zip \
@@ -61,7 +74,7 @@ HEALTHCHECK --interval=20s --timeout=5s --retries=3  CMD curl --fail -si 127.0.0
 
 EXPOSE 8080
 
-USER phpapp
+#USER phpapp
 
 # run s6 service supervisor (not as entrypoint!)
 CMD [ "/init" ]
