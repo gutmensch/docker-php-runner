@@ -13,10 +13,16 @@ server {
 	}
 
 	location / {
+		if ($remote_addr ~ ^(127.0.0.1|::1)$) {
+			access_log off;
+		}
 		try_files $uri $uri/ =404;
 	}
 
 	location ~ [^/]\.php(/|$) {
+		if ($remote_addr ~ ^(127.0.0.1|::1)$) {
+			access_log off;
+		}
 		include fastcgi-php.conf;
 		fastcgi_pass unix:/var/run/php-fpm.sock;
 	}

@@ -56,9 +56,7 @@ RUN apk update \
   && adduser -S -G phpapp -u $PHP_USER_UID phpapp \
   \
   # adjust permissions \
-  && chgrp -R phpapp /var/run /run \
-  && chmod -R g+w /var/run /run \
-  && chown -R phpapp:phpapp /var/log/nginx /var/log/php7 /var/lib/nginx /etc/nginx /etc/php7 /var/www \
+  && chown -R phpapp:phpapp /run /var/run /var/log/nginx /var/log/php7 /var/lib/nginx /etc/nginx /etc/php7 /var/www \
   \
   # install s6-overlay \
   && curl -sSL "https://github.com/just-containers/s6-overlay/releases/download/v${S6_VERSION}/s6-overlay-amd64.tar.gz" \
@@ -73,11 +71,11 @@ ENV DOCUMENT_ROOT=/var/www \
     PHP_MEMORY_LIMIT_MB=128 \
     PHP_ERROR_REPORTING="E_ALL & ~E_DEPRECATED & ~E_STRICT"
 
-HEALTHCHECK --interval=20s --timeout=5s --retries=3  CMD curl --fail -si 127.0.0.1:8080/ping
+HEALTHCHECK --interval=20s --timeout=5s --retries=3  CMD curl --fail -s 127.0.0.1:8080/ping
 
 EXPOSE 8080
 
-#USER phpapp
+USER phpapp
 
 # run s6 service supervisor (not as entrypoint!)
 CMD [ "/init" ]
