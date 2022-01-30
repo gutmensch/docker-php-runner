@@ -2,6 +2,6 @@
 
 if [ -n "${TZ}" ]
 then
-    ln -snf "/usr/share/zoneinfo/${TZ}" /etc/localtime
-    echo "${TZ}" > /etc/timezone
+    ln -snf "/usr/share/zoneinfo/${TZ}" /var/run/s6/localtime
+    echo "${TZ}" > /var/run/s6/timezone
 fi

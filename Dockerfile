@@ -56,13 +56,18 @@ RUN apk update \
   && adduser -S -G phpapp -u $PHP_USER_UID phpapp \
   \
   # adjust permissions \
+  && mkdir /var/run/s6 \
   && chown -R phpapp:phpapp /run /var/run /var/log/nginx /var/log/php7 /var/lib/nginx /etc/nginx /etc/php7 /var/www \
   \
+  # make timezone adjustable \
+  && touch /var/run/s6/localtime /var/run/s6/timezone \
+  && rm -f /etc/localtime && ln -s /var/run/s6/localtime /etc/localtime \
+  && rm -f /etc/timezone && ln -s /var/run/s6/timezone /etc/timezone \
   # install s6-overlay \
   && curl -sSL "https://github.com/just-containers/s6-overlay/releases/download/v${S6_VERSION}/s6-overlay-amd64.tar.gz" \
     | tar xvzf - -C / \
- && sed -i "s/s6-nuke -th/s6-nuke -t/" /etc/s6/init/init-stage3 \
- && chown -R phpapp:phpapp /etc/s6 /etc/services.d
+  && sed -i "s/s6-nuke -th/s6-nuke -t/" /etc/s6/init/init-stage3 \
+  && chown -R phpapp:phpapp /etc/s6 /etc/services.d /etc/cont-init.d
 
 # variables for s6 service configuration
 ENV DOCUMENT_ROOT=/var/www \
