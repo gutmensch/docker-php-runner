@@ -10,7 +10,7 @@ COPY manifest /
 RUN apk update \
   \
   # install base packages \
-  && apk add nginx curl bash gettext \
+  && apk add nginx curl bash gettext tzdata \
   \
   # install php modules and process manager \
   && apk add php7 \
