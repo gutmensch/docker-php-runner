@@ -1,6 +1,7 @@
 worker_processes 4;
 pcre_jit on;
 daemon off;
+error_log /proc/self/fd/2;
 
 events {
     worker_connections 768;
@@ -28,8 +29,7 @@ http {
                     'rt=$request_time uct="$upstream_connect_time" '
 	            'uht="$upstream_header_time" urt="$upstream_response_time"';
 
-    access_log /dev/stdout main;
-    error_log /dev/stderr;
+    access_log /proc/self/fd/1 main;
 
     gzip on;
     gzip_disable "msie6";
