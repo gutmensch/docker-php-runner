@@ -1,10 +1,14 @@
-ARG ALPINE_VERSION=3.15
-FROM alpine:$ALPINE_VERSION
+ARG IMAGE_VERSION=3.15
 
-ARG PHP_USER_UID=2000
-ARG PHP_USER_GID=2000
+FROM registry.n-os.org:5000/root-ca:20220205 AS certs
+
+FROM alpine:$IMAGE_VERSION
+
+ARG IMAGE_UID=2000
+ARG IMAGE_GID=2000
 ARG S6_VERSION=2.2.0.3
 
+COPY --from=certs /CA/certs/common/ /etc/ssl/certs/common/
 COPY manifest /
 
 RUN apk update \
@@ -52,8 +56,8 @@ RUN apk update \
     php7-zip \
     \
   # add application user \
-  && addgroup -S -g $PHP_USER_GID phpapp \
-  && adduser -S -G phpapp -u $PHP_USER_UID phpapp \
+  && addgroup -S -g $IMAGE_GID phpapp \
+  && adduser -S -G phpapp -u $IMAGE_UID phpapp \
   \
   # adjust permissions \
   && mkdir /var/run/s6 \
@@ -67,7 +71,8 @@ RUN apk update \
   && curl -sSL "https://github.com/just-containers/s6-overlay/releases/download/v${S6_VERSION}/s6-overlay-amd64.tar.gz" \
     | tar xvzf - -C / \
   && sed -i "s/s6-nuke -th/s6-nuke -t/" /etc/s6/init/init-stage3 \
-  && chown -R phpapp:phpapp /etc/s6 /etc/services.d /etc/cont-init.d
+  && chown -R phpapp:phpapp /etc/s6 /etc/services.d /etc/cont-init.d \
+  && /etc/ssl/certs/common/setup.sh
 
 # variables for s6 service configuration
 ENV DOCUMENT_ROOT=/var/www \
